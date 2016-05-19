@@ -42,7 +42,7 @@ public class Transmitter {
         b = tmp;
       }
 
-      idx = entry.strip * Config.STRIPS + entry.led * 3 + 1;
+      idx = (entry.led * Config.STRIPS + entry.strip) * 3 + 1;
       buffer[idx] = byte(r);
       buffer[idx+1] = byte(g);
       buffer[idx+2] = byte(b);

@@ -5,7 +5,8 @@ MapEntry[] map;
 Transmitter transmitter;
 float fader = 127;
 
-int xofs,yofs,xfade;
+int xofs,yofs;
+float xfade;
 public void setup() {
   size(1024, 1024, P3D);
   frameRate(60);
@@ -73,6 +74,8 @@ public void draw() {
   image(mix, width/2-180, 3*height/4-180);
  
   // Draw the fader bar
+  stroke(0);
+  line(width/2-255,height/2+25,width/2+255,height/2+25);
   stroke(0, 0, 255);
   strokeWeight(10);
   xfade = width/2 - (fader-127)*2;
