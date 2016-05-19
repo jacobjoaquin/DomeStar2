@@ -5,6 +5,7 @@ MapEntry[] map;
 Transmitter transmitter;
 float fader = 127;
 
+int xofs,yofs,xfade;
 public void setup() {
   size(1024, 1024, P3D);
   frameRate(60);
@@ -48,8 +49,8 @@ public void draw() {
   rightRoutine.endDraw();
 
   // Figure out center offsets
-  int xofs = (mouseX - width/2) / (width / 90);
-  int yofs = (mouseY - height/2) / (height / 90);
+  xofs = (mouseX - width/2) / (width / 90);
+  yofs = (mouseY - height/2) / (height / 90);
   
   // Blit the left and right routines to screen with offsets
   leftRoutine.imageCenter(width/4+xofs, height/4+yofs);
@@ -58,6 +59,7 @@ public void draw() {
   // Draw the clipping box
   noFill();
   stroke(100, 255, 255);
+  strokeWeight(1);
   rect(width/4-180-1, height/4-180-1, 362, 362);
   rect(3*width/4-180-1, height/4-180-1, 362, 362);
 
@@ -69,6 +71,12 @@ public void draw() {
   rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
   mix.endDraw();  
   image(mix, width/2-180, 3*height/4-180);
+ 
+  // Draw the fader bar
+  stroke(0, 0, 255);
+  strokeWeight(10);
+  xfade = width/2 - (fader-127)*2;
+  line(xfade, height/2, xfade, height/2 + 50);
   
   // Send the mix to the dome
   transmitter.sendData(mix, map); 
