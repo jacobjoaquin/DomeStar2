@@ -7,20 +7,28 @@ float fader = 127;
 
 int xofs,yofs;
 float xfade;
+
+Routine[] routines = null;
+
 public void setup() {
   size(1024, 1024, P3D);
   frameRate(60);
   colorMode(HSB);
-  
-  leftRoutine = new RoutinePermutatingRect();
-  leftRoutine.beginDraw();
-  leftRoutine.setup();
-  leftRoutine.endDraw();
 
-  rightRoutine = new RoutinePermutatingRect();
-  rightRoutine.beginDraw();
-  rightRoutine.setup();
-  rightRoutine.endDraw();
+  routines = new Routine[]{
+    new RoutinePermutatingRect(),
+    new PerlinPink()
+  };
+
+  for (Routine routine: routines) {
+    routine.beginDraw();
+    routine.setup();
+    routine.endDraw();
+  }
+
+  // TODO: find a way to pick and switch routines.
+  leftRoutine = routines[0];
+  rightRoutine = routines[1];
   
   mix = createGraphics(360, 360, P3D);
   
