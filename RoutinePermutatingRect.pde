@@ -1,4 +1,14 @@
+public class RectFactory implements RoutineFactory {
+  public Routine create() {
+    return new RoutinePermutatingRect();
+  }
+}
+
 public class RoutinePermutatingRect extends Routine {
+  
+  public RoutinePermutatingRect() {
+    super(450, 450);
+  }
   
   private class Permutation {
     /**

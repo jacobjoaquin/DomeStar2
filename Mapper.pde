@@ -38,7 +38,7 @@ class Mapper {
         }
         
         int x = int(Config.MAP_WIDTH / 2 + sin(rotation) * magnitude);
-        int y = int(Config.MAP_WIDTH / 2 + cos(rotation) * magnitude);
+        int y = int(Config.MAP_HEIGHT / 2 + cos(rotation) * magnitude);
         
         // TODO Do i need to STRIP_LOOKUP here too?
         lookup[led * Config.STRIPS + strip] = new MapEntry(x, y, led, strip);

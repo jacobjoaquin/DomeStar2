@@ -7,20 +7,20 @@ float fader = 127;
 
 int xofs,yofs;
 float xfade;
+
+RoutineFactory[] routines = new RoutineFactory[] {
+  new PerlinFactory(),
+  new RectFactory()
+};
+
 public void setup() {
   size(1024, 1024, P3D);
   frameRate(60);
-  colorMode(HSB);
-  
-  leftRoutine = new RoutinePermutatingRect();
-  leftRoutine.beginDraw();
-  leftRoutine.setup();
-  leftRoutine.endDraw();
+  noSmooth();
+  //colorMode(HSB);
 
-  rightRoutine = new RoutinePermutatingRect();
-  rightRoutine.beginDraw();
-  rightRoutine.setup();
-  rightRoutine.endDraw();
+  leftRoutine = pickRoutine();
+  rightRoutine = pickRoutine();
   
   mix = createGraphics(360, 360, P3D);
   
@@ -34,6 +34,32 @@ public void setup() {
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
   fader = max(0, min(255, fader + e));
+}
+
+// TODO: Use WiiMote
+void mousePressed() {
+  // Update the routine faded away, or
+  // randomly update one of either the left or right.
+  if (fader < 50) {
+    leftRoutine = pickRoutine();
+  } else if (fader > 200) {
+    rightRoutine = pickRoutine();
+  } else if (random(2) > 1.0) {
+    leftRoutine = pickRoutine();
+  } else {
+    rightRoutine = pickRoutine();
+  }
+}
+
+Routine pickRoutine() {
+  int idx = int(random(routines.length));
+  RoutineFactory factory = routines[idx];
+
+  Routine instance = factory.create();
+  instance.beginDraw();
+  instance.setup();
+  instance.endDraw();
+  return instance;
 }
 
 public void draw() {
@@ -66,9 +92,9 @@ public void draw() {
 
   // Blit the left and right to the mix with tint and fade
   mix.beginDraw();
-  mix.tint(127, 255, 255, fader);
+  mix.tint(255, fader);
   leftRoutine.imageCenter(mix, 180+xofs, 180+yofs);
-  mix.tint(127, 255, 255, 255-fader);
+  mix.tint(255, 255-fader);
   rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
   mix.endDraw();  
   image(mix, width/2-180, 3*height/4-180);
