@@ -4,7 +4,7 @@ public static class Config {
   public static int STRIPS = 40;
   public static int LEDS = 160;
 
-  public static boolean ENABLE_GAMMA = true;
+  public static boolean ENABLE_GAMMA = false; //true;
   public static float GAMMA_VALUE = 2.5;
   public static float ZOOM = 4;
   public static float BRIGHTNESS = 1.0;
