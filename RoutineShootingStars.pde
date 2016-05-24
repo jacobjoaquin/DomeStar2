@@ -1,5 +1,14 @@
 
+public class StarFactory implements RoutineFactory {
+  public Routine create() {
+    return new RoutineShootingStars();
+  }
+}
 public class RoutineShootingStars extends Routine {
+  
+  public RoutineShootingStars() {
+    super(450, 450);
+  }
 
   ArrayList stars = new ArrayList();
   ArrayList palettes = new ArrayList();
