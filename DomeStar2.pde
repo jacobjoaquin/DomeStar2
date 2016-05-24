@@ -36,10 +36,15 @@ void mouseWheel(MouseEvent event) {
   fader = max(0, min(255, fader + e));
 }
 
+// TODO: Use WiiMote
 void mousePressed() {
-  // Randomly update one of either the left or right.
-  // TODO: Use WiiMote
-  if (random(2) > 1.0) {
+  // Update the routine faded away, or
+  // randomly update one of either the left or right.
+  if (fader < 50) {
+    leftRoutine = pickRoutine();
+  } else if (fader > 200) {
+    rightRoutine = pickRoutine();
+  } else if (random(2) > 1.0) {
     leftRoutine = pickRoutine();
   } else {
     rightRoutine = pickRoutine();
