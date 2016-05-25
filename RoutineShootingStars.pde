@@ -52,7 +52,7 @@ public class RoutineShootingStars extends Routine {
     {160, 255, 170} // mint
   };
   
-  void setup() {
+  public void setup() {
     pg.background(0);
     pg.strokeWeight(3);
 //    pg.translate(width / 2, height / 2);
@@ -63,7 +63,7 @@ public class RoutineShootingStars extends Routine {
     paletteSwitchTime = System.currentTimeMillis();
   }
   
-  void draw() {
+  public void draw() {
     //pg.background(0);
     pg.translate(pg.width/2, pg.height/2);
     if ((frameCount % interval) == 0 && stars.size() < 360) {
