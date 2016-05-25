@@ -1,6 +1,6 @@
 
 public class StarFactory implements RoutineFactory {
-  public Routine create() {
+  public Routine create(PApplet parent) {
     return new RoutineShootingStars();
   }
 }

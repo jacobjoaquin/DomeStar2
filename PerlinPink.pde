@@ -4,7 +4,7 @@ PVector black = new PVector(0, 0, 0);
 PVector orange = new PVector(255, 170, 77);
 
 public class PerlinFactory implements RoutineFactory {
-  public Routine create() {
+  public Routine create(PApplet parent) {
     return new PerlinPink();
   }
 }
