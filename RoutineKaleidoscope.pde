@@ -1,5 +1,5 @@
 public class KaleFactory implements RoutineFactory {
-  public Routine create() {
+  public Routine create(PApplet parent) {
     return new RoutineKaleidoscope();
   }
 }

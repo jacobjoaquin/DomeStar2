@@ -1,5 +1,9 @@
+import java.io.*;
+
+import processing.video.*;
 import netP5.*;
 import oscP5.*;
+
 
 OscP5 osc;
 Routine leftRoutine;
@@ -27,7 +31,6 @@ public void setup() {
   size(1024, 1024, P3D);
   frameRate(60);
   noSmooth();
-  //colorMode(HSB);
 
   leftRoutine = pickRoutine();
   rightRoutine = pickRoutine();
@@ -130,7 +133,7 @@ Routine pickRoutine() {
   int idx = int(random(routines.length));
   RoutineFactory factory = routines[idx];
 
-  Routine instance = factory.create();
+  Routine instance = factory.create(this);
   instance.beginDraw();
   instance.setup();
   instance.endDraw();
