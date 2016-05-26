@@ -29,5 +29,5 @@ public abstract class Routine {
 }
 
 public interface RoutineFactory {
-  Routine create();
+  Routine create(PApplet parent);
 }
