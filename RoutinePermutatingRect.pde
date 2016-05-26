@@ -100,12 +100,14 @@ public class RoutinePermutatingRect extends Routine {
     pg.pushMatrix();    
     pg.translate(pg.width/2, pg.height/2);
     
+    color col = getColor();
+    
     permutatingRect(
       new Permutation(510, -34, 1),                      // Size, from outside going in
       new Permutation(rotation.value, PI/16, 1.025),     // Rotation, PI/16 * 103.33%
-      new Permutation(127, 0, 1),                        // Hue, static for now
-      new Permutation(0, 0, 1),                          // Saturation, static for now
-      new Permutation(254, -8, 1, 0, 255),               // Brightness, toward dark, capped
+      new Permutation(hue(col), 0, 1),                        // Hue, static for now
+      new Permutation(saturation(col), 0, 1),                          // Saturation, static for now
+      new Permutation(brightness(col), -8, 1, 0, 255),               // Brightness, toward dark, capped
       new Permutation(int(pg.width/30), -1, 1)                         // Count, 14
     );
     pg.popMatrix();    

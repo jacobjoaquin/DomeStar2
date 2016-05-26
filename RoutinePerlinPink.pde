@@ -5,15 +5,15 @@ PVector orange = new PVector(255, 170, 77);
 
 public class PerlinFactory implements RoutineFactory {
   public Routine create(PApplet parent) {
-    return new PerlinPink();
+    return new RoutinePerlinPink();
   }
 }
 
-public class PerlinPink extends Routine {
+public class RoutinePerlinPink extends Routine {
   private PerlinDot[] dots;
   int iteration = int(random(100000000));
 
-  public PerlinPink() {
+  public RoutinePerlinPink() {
     super(40, 160);
   }
   

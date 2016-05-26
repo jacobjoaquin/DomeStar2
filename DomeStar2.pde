@@ -17,12 +17,13 @@ float faderOfs = 0;
 int xofs,yofs;
 float xfade;
 boolean shouldChangeRoutine = false;
+int colorOffset = 0;
 
 RoutineFactory[] routines = new RoutineFactory[] {
-  //new PerlinFactory(),
-  //new RectFactory(),
-  //new KaleFactory(),
-  //new StarFactory(),
+  new PerlinFactory(),
+  new RectFactory(),
+  new KaleFactory(),
+  new StarFactory(),
   new MovieFactory()
 };
 
@@ -89,6 +90,11 @@ void mouseMoved() {
   setCenterOffset(mouseX, mouseY, width, height);
 }
 
+void keyPressed() {
+  rotateColors(1);
+  
+}
+
 void oscEvent(OscMessage message) {
   String pattern = message.addrPattern();
   //message.print();
@@ -115,6 +121,12 @@ void oscEvent(OscMessage message) {
   else if (pattern.endsWith("/button/Home")) {
     resetCrossFade();
   }
+  else if (pattern.endsWith("/button/Up")) {
+    rotateColors(1);
+  }
+  else if (pattern.endsWith("/button/Down")) {
+    rotateColors(-1);
+  }
 }
 
 Routine pickRoutine() {
@@ -126,6 +138,30 @@ Routine pickRoutine() {
   instance.setup();
   instance.endDraw();
   return instance;
+}
+
+public void rotateColors(int ofs) {
+  int len = Config.PALETTE.length;
+  colorOffset += ofs;
+  
+  if (colorOffset >= len)
+    colorOffset -= len;
+  else if (colorOffset < 0)
+    colorOffset += len;    
+}
+
+public color getColor() {
+  return getColor(0);
+}
+
+public color getColor(int idx) {
+  idx += colorOffset;
+  int len = Config.PALETTE.length;
+  
+  while(idx>=len) idx-=len;
+  while(idx<0) idx+=len;
+  
+  return Config.PALETTE[idx];
 }
 
 public void draw() {

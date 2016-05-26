@@ -19,13 +19,13 @@ public class RoutineKaleidoscope extends Routine {
   public void setup() {
     arcs = new LightArcs();
     wave = new Shockwave();
-    img = loadImage("nyan.png");
-    ks = new Kaleidoscope(img);
+    
+    ks = new Kaleidoscope();
   }
   
   public void draw() {  
     pg.colorMode(RGB);
-    pg.background(33, 25, 51);
+    pg.background(0);
      
     arcs.step();
     wave.step();
@@ -46,13 +46,18 @@ public class RoutineKaleidoscope extends Routine {
     ArrayList<ImageSpin> spinners;
     int count;
     
-    public Kaleidoscope(PImage image) {
+    public Kaleidoscope() {
       this.image = image;
       this.spinners = new ArrayList<ImageSpin>();
       this.reset();
     }
     
     public void reset() {
+      File dir = new File(dataPath("images"));
+      File[] files = dir.listFiles();
+      File file = files[int(random(0,files.length))];
+      this.image = loadImage(file.getAbsolutePath());
+
       this.count = 1;
       this.setupSpinners();
     }
@@ -173,16 +178,16 @@ public class RoutineKaleidoscope extends Routine {
         pg.ellipseMode(RADIUS);
         pg.noStroke();
         
-        pg.fill(33, 25, 51);
+        pg.fill(0);
         pg.ellipse(180,180,radius,radius);
         
         if (radius>20) {
-          pg.fill(255);
+          pg.fill(getColor());
           pg.ellipse(180,180,radius*.85,radius*.85);
         }
     
         if (radius > 50) {
-          pg.fill(33, 25, 51);
+          pg.fill(0);
           pg.ellipse(180,180,radius-50,radius-50);
         }
       }
@@ -260,18 +265,19 @@ public class RoutineKaleidoscope extends Routine {
     
     public void draw() {
       int half = int(size/2 * (len/360.0));
-    
+      color col = getColor();
+
       pg.pushMatrix();
       pg.pushStyle();
     
       pg.translate(180, 180);
       pg.rotate(angle);
       pg.noStroke();
-      pg.fill(255,255,255,64);
+      pg.fill(red(col),green(col),blue(col),64);
       pg.triangle(0, 0, half+7, len, -half-7, len);
-      pg.fill(255,255,255,127);
+      pg.fill(red(col),green(col),blue(col),127);
       pg.triangle(0, 0, half+5, len, -half-5, len);
-      pg.fill(255);
+      pg.fill(col);
       pg.triangle(0, 0, half, len, -half, len);
     
       pg.popStyle();
