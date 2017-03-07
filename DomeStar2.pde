@@ -19,6 +19,8 @@ float xfade;
 boolean shouldChangeRoutine = false;
 int colorOffset = 0;
 
+int[] gammaTable = new int[256];
+
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
   new RectFactory(),
@@ -31,6 +33,7 @@ public void setup() {
   size(1024, 1024, P3D);
   frameRate(60);
   noSmooth();
+  initGammaTable();
 
   leftRoutine = pickRoutine();
   rightRoutine = pickRoutine();
