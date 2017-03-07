@@ -40,9 +40,11 @@ public class RoutinePerlinPink extends Routine {
     // change this to some kind of frames per second.
     // decrease if changes on dome are too slow.
     float iterationFactor = iteration / 500.0;
+    pg.loadPixels();
     for (PerlinDot dot : dots) {
       dot.display(iterationFactor);
     }
+    pg.updatePixels();
   }
 
   class PerlinDot {
@@ -87,8 +89,7 @@ public class RoutinePerlinPink extends Routine {
       float n2 = noise(lightNum * 3, stripNum * 3, it * 3);
       r = r.copy().mult(2 * n2 - .3);
 
-      pg.stroke(color(r.x, r.y, r.z));
-      pg.point(x, y);
+      pg.pixels[x + y * pg.width] = color(r.x, r.y, r.z);
     }
   }
 }
