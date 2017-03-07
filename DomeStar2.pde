@@ -30,7 +30,7 @@ RoutineFactory[] routines = new RoutineFactory[] {
 };
 
 public void setup() {
-  size(1024, 1024, P3D);
+  size(1024, 1024, P2D);
   frameRate(60);
   noSmooth();
   initGammaTable();
@@ -38,7 +38,7 @@ public void setup() {
   leftRoutine = pickRoutine();
   rightRoutine = pickRoutine();
 
-  mix = createGraphics(360, 360, P3D);
+  mix = createGraphics(360, 360, P2D);
 
   Mapper mapper = new Mapper();
   map = mapper.build();
