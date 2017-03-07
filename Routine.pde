@@ -1,5 +1,7 @@
 public abstract class Routine {
   protected PGraphics pg = null;
+  protected int drawWidth = 450;
+  protected int drawHeight = 450;
 
   public Routine(int w, int h) {
     this.pg = createGraphics(w, h, P2D);
@@ -21,11 +23,17 @@ public abstract class Routine {
   }
 
   public void imageCenter(int x, int y) {
-    image(pg, (x - 450/2), y - 450/2, 450, 450);
+    pushStyle();
+    imageMode(CENTER);
+    image(pg, x, y, drawWidth, drawHeight);
+    popStyle();
   }
 
   public void imageCenter(PGraphics tpg, int x, int y) {
-    tpg.image(pg, x - 450/2, y - 450/2, 450, 450);
+    tpg.pushStyle();
+    tpg.imageMode(CENTER);
+    tpg.image(pg, x, y, drawWidth, drawHeight);
+    tpg.popStyle();
   }
 
   public int width() { return pg.width; }
