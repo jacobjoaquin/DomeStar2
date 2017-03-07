@@ -32,7 +32,8 @@ RoutineFactory[] routines = new RoutineFactory[] {
 public void setup() {
   size(1024, 1024, P2D);
   frameRate(60);
-  noSmooth();
+  // noSmooth();
+  imageMode(CENTER);
   initGammaTable();
 
   leftRoutine = pickRoutine();
@@ -200,12 +201,16 @@ public void draw() {
 
   // Blit the left and right to the mix with tint and fade
   mix.beginDraw();
+  mix.background(0);
+  mix.blendMode(ADD);
   mix.tint(255, fader);
   leftRoutine.imageCenter(mix, 180+xofs, 180+yofs);
   mix.tint(255, 255-fader);
   rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
   mix.endDraw();
-  image(mix, width/2-180, 3*height/4-180);
+  pushStyle();
+  image(mix, width/2.0, 3*height/4);
+  popStyle();
 
   // Draw the fader bar
   stroke(0);

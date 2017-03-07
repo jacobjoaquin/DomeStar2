@@ -1,7 +1,7 @@
 public abstract class Routine {
   protected PGraphics pg = null;
-  protected int drawWidth = 450;
-  protected int drawHeight = 450;
+  protected final int drawWidth = 450;
+  protected final int drawHeight = 450;
 
   public Routine(int w, int h) {
     this.pg = createGraphics(w, h, P2D);

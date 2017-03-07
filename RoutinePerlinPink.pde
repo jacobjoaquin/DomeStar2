@@ -16,7 +16,7 @@ public class RoutinePerlinPink extends Routine {
   public RoutinePerlinPink() {
     super(40, 160);
   }
-  
+
   public void setup() {
     pg.background(0);
     pg.colorMode(RGB);
@@ -36,13 +36,15 @@ public class RoutinePerlinPink extends Routine {
   public void draw() {
     pg.background(0);
     iteration++;
-    
+
     // change this to some kind of frames per second.
     // decrease if changes on dome are too slow.
     float iterationFactor = iteration / 500.0;
+    pg.loadPixels();
     for (PerlinDot dot : dots) {
       dot.display(iterationFactor);
     }
+    pg.updatePixels();
   }
 
   class PerlinDot {
@@ -53,7 +55,7 @@ public class RoutinePerlinPink extends Routine {
     public PerlinDot(int x, int y) {
       this.x = x;
       this.y = y;
-      
+
       // 2 so that the vertical lines are longer.  creates a more falling effect.
       // (adjust according to actual field of view.)
       stripNum = sqrt((x-20) * (x-20) + (y-80) * (y-80)) / 80;
@@ -86,12 +88,8 @@ public class RoutinePerlinPink extends Routine {
       // by moving through time quickly it gives in a shimmering.
       float n2 = noise(lightNum * 3, stripNum * 3, it * 3);
       r = r.copy().mult(2 * n2 - .3);
-    
-      color c = color(r.x, r.y, r.z);
 
-      pg.fill(c);
-      pg.stroke(c);
-      pg.rect(x, y, 1, 1);
+      pg.pixels[x + y * pg.width] = color(r.x, r.y, r.z);
     }
   }
 }
