@@ -228,11 +228,26 @@ public void draw() {
   xfade = width/2 - (fader-127)*2;
   line(xfade, height/2, xfade, height/2 + 50);
 
+  mixToOutput();
+
   // Output canvas
   imageMode(CORNER);
   image(output, 50, 700);
 
   // Send the mix to the dome
-  // transmitter.sendData(mix, map);
-  transmitter.sendData(output);
+  transmitter.sendData(mix, map);
+  // transmitter.sendData(output);
+}
+
+void mixToOutput() {
+  int w = mix.width;
+  mix.loadPixels();
+  output.loadPixels();
+
+  for (MapEntry entry : map) {
+    color c = mix.pixels[entry.y * w + entry.x];
+    output.pixels[entry.strip * Config.LEDS + entry.led] = c;
+  }
+
+  output.updatePixels();
 }
