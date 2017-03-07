@@ -9,6 +9,7 @@ OscP5 osc;
 Routine leftRoutine;
 Routine rightRoutine;
 PGraphics mix;
+PGraphics output;
 MapEntry[] map;
 Transmitter transmitter;
 float fader = 127;
@@ -40,6 +41,12 @@ public void setup() {
   rightRoutine = pickRoutine();
 
   mix = createGraphics(360, 360, P2D);
+  output = createGraphics(Config.LEDS, Config.STRIPS, P2D);
+
+  output.beginDraw();
+  output.background(0);
+  output.ellipse(output.width / 2.0, output.height / 2.0, 10, 10);
+  output.endDraw();
 
   Mapper mapper = new Mapper();
   map = mapper.build();
@@ -209,6 +216,7 @@ public void draw() {
   rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
   mix.endDraw();
   pushStyle();
+  imageMode(CENTER);
   image(mix, width/2.0, 3*height/4);
   popStyle();
 
@@ -220,6 +228,11 @@ public void draw() {
   xfade = width/2 - (fader-127)*2;
   line(xfade, height/2, xfade, height/2 + 50);
 
+  // Output canvas
+  imageMode(CORNER);
+  image(output, 50, 700);
+
   // Send the mix to the dome
-  transmitter.sendData(mix, map);
+  // transmitter.sendData(mix, map);
+  transmitter.sendData(output);
 }

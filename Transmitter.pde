@@ -40,4 +40,35 @@ public class Transmitter {
 
     udp.send(buffer, Config.HOST, Config.PORT);
   }
+
+  public void sendData(PGraphics pg) {
+    pg.loadPixels();
+    int length = pg.width * pg.height;
+
+    for (int i = 0; i < length; i++) {
+      color c = pg.pixels[i];
+      int r = (c >> 16) & 0xff;
+      int g = (c >> 8) & 0xff;
+      int b = c & 0xff;
+
+      if (Config.ENABLE_GAMMA) {
+        r = gammaTable[r];
+        g = gammaTable[g];
+        b = gammaTable[b];
+      }
+      int idx = i * 3 + 1;
+      buffer[idx] = (byte)r;
+
+      // TODO: Double check the lookup index
+      if (Config.SWAP_LOOKUP[i / Config.LEDS]) {
+        buffer[idx + 2] = (byte)g;
+        buffer[idx + 1] = (byte)b;
+      } else {
+        buffer[idx + 1] = (byte)g;
+        buffer[idx + 2] = (byte)b;
+      }
+    }
+
+    udp.send(buffer, Config.HOST, Config.PORT);
+  }
 }
