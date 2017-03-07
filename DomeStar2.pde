@@ -22,9 +22,9 @@ int colorOffset = 0;
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
   new RectFactory(),
-  new KaleFactory(),
+  // new KaleFactory(),
   new StarFactory(),
-  new MovieFactory()
+  // new MovieFactory()
 };
 
 public void setup() {
@@ -34,14 +34,14 @@ public void setup() {
 
   leftRoutine = pickRoutine();
   rightRoutine = pickRoutine();
-  
+
   mix = createGraphics(360, 360, P3D);
-  
+
   Mapper mapper = new Mapper();
   map = mapper.build();
-  
+
   transmitter = new Transmitter(this);
-  osc = new OscP5(this, 9000);
+  // osc = new OscP5(this, 9000);
 }
 
 void addCrossFade(float e) {
@@ -64,7 +64,7 @@ void requestChangeRoutine() {
 // Do not call directly, instead set shouldChangeRoutine
 void changeRoutine() {
   shouldChangeRoutine = false;
-  
+
   // Update the routine faded away, or
   // randomly update one of either the left or right.
   if (fader < 50) {
@@ -78,7 +78,7 @@ void changeRoutine() {
   }
 }
 
-void mouseWheel(MouseEvent event) { 
+void mouseWheel(MouseEvent event) {
   addCrossFade(event.getCount());
 }
 
@@ -92,16 +92,16 @@ void mouseMoved() {
 
 void keyPressed() {
   rotateColors(1);
-  
+
 }
 
 void oscEvent(OscMessage message) {
   String pattern = message.addrPattern();
   //message.print();
-  
-  if (!pattern.startsWith("/wii/")) 
+
+  if (!pattern.startsWith("/wii/"))
     return;
-   
+
   if (pattern.endsWith("/button/A") && message.get(0).floatValue() == 0) {
     requestChangeRoutine();
   }
@@ -143,11 +143,11 @@ Routine pickRoutine() {
 public void rotateColors(int ofs) {
   int len = Config.PALETTE.length;
   colorOffset += ofs;
-  
+
   if (colorOffset >= len)
     colorOffset -= len;
   else if (colorOffset < 0)
-    colorOffset += len;    
+    colorOffset += len;
 }
 
 public color getColor() {
@@ -157,28 +157,28 @@ public color getColor() {
 public color getColor(int idx) {
   idx += colorOffset;
   int len = Config.PALETTE.length;
-  
+
   while(idx>=len) idx-=len;
   while(idx<0) idx+=len;
-  
+
   return Config.PALETTE[idx];
 }
 
 public void draw() {
   background(100);
-  
+
   addCrossFade(faderOfs);
-  
+
   // Check here for changing routines to ensure we're in the
   // drawing thread.  Events can come from other threads.
-  if (shouldChangeRoutine) 
+  if (shouldChangeRoutine)
     changeRoutine();
-    
+
   // Draw the left routine
   leftRoutine.beginDraw();
   leftRoutine.draw();
   leftRoutine.endDraw();
-  
+
   // Draw the right routine
   rightRoutine.beginDraw();
   rightRoutine.draw();
@@ -187,7 +187,7 @@ public void draw() {
   // Blit the left and right routines to screen with offsets
   leftRoutine.imageCenter(width/4+xofs, height/4+yofs);
   rightRoutine.imageCenter(3*width/4-xofs, height/4-yofs);
-  
+
   // Draw the clipping box
   noFill();
   stroke(100, 255, 255);
@@ -201,9 +201,9 @@ public void draw() {
   leftRoutine.imageCenter(mix, 180+xofs, 180+yofs);
   mix.tint(255, 255-fader);
   rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
-  mix.endDraw();  
+  mix.endDraw();
   image(mix, width/2-180, 3*height/4-180);
- 
+
   // Draw the fader bar
   stroke(0);
   line(width/2-255,height/2+25,width/2+255,height/2+25);
@@ -211,7 +211,7 @@ public void draw() {
   strokeWeight(10);
   xfade = width/2 - (fader-127)*2;
   line(xfade, height/2, xfade, height/2 + 50);
-  
+
   // Send the mix to the dome
-  transmitter.sendData(mix, map); 
+  transmitter.sendData(mix, map);
 }

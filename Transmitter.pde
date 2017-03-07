@@ -6,9 +6,9 @@ public class Transmitter {
 
   public Transmitter(PApplet parent) {
     this.udp = new UDP(parent);
-    
+
     buffer = new byte[Config.STRIPS * Config.LEDS * 3 + 1];
-    
+
     for (int i=0; i<buffer.length; i++) {
       buffer[i] = 0;
     }
@@ -21,7 +21,7 @@ public class Transmitter {
     int b;
     int idx;
     int tmp;
-    
+
     pg.loadPixels();
     buffer[0] = 1;
     for (MapEntry entry : map) {
@@ -37,8 +37,8 @@ public class Transmitter {
       }
 
       if (Config.SWAP_LOOKUP[entry.strip]) {
-        tmp = g; 
-        g = b; 
+        tmp = g;
+        g = b;
         b = tmp;
       }
 
