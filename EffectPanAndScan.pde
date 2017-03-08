@@ -15,7 +15,7 @@ class PanAndScan {
   void update() {
     s = pg.width / 2.0;
     x = map(mouseX, 0, width, 0, pg.width - s);
-    y = map(mouseY, 0, width, 0, pg.height - s);
+    y = map(mouseY, 0, height, 0, pg.height - s);
 
     pgFx.beginDraw();
     pgFx.copy(pg, (int)x, (int)y, (int)s, (int)s, 0, 0, pg.width, pg.height);
