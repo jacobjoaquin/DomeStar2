@@ -22,6 +22,8 @@ int colorOffset = 0;
 
 int[] gammaTable = new int[256];
 
+ViewportList viewportList = new ViewportList();
+
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
   new RectFactory(),
@@ -42,6 +44,14 @@ public void setup() {
 
   mix = createGraphics(360, 360, P2D);
   output = createGraphics(Config.STRIPS, Config.LEDS, P2D);
+
+  // Create viewports
+  Viewport vp = new Viewport(0, 0, 200, 200);  // Left Viewport
+  vp.setRoutine(pickRoutine());
+  viewportList.add(vp);
+  vp = new Viewport(200, 0, 200, 200);         // Right Viewport
+  vp.setRoutine(pickRoutine());
+  viewportList.add(vp);
 
   output.beginDraw();
   output.background(0);
@@ -186,39 +196,39 @@ public void draw() {
     changeRoutine();
 
   // Draw the left routine
-  leftRoutine.beginDraw();
-  leftRoutine.draw();
-  leftRoutine.endDraw();
+  // leftRoutine.beginDraw();
+  // leftRoutine.draw();
+  // leftRoutine.endDraw();
 
   // Draw the right routine
-  rightRoutine.beginDraw();
-  rightRoutine.draw();
-  rightRoutine.endDraw();
+  // rightRoutine.beginDraw();
+  // rightRoutine.draw();
+  // rightRoutine.endDraw();
 
   // Blit the left and right routines to screen with offsets
-  leftRoutine.imageCenter(width/4+xofs, height/4+yofs);
-  rightRoutine.imageCenter(3*width/4-xofs, height/4-yofs);
+  // leftRoutine.imageCenter(width/4+xofs, height/4+yofs);
+  // rightRoutine.imageCenter(3*width/4-xofs, height/4-yofs);
 
   // Draw the clipping box
-  noFill();
-  stroke(100, 255, 255);
-  strokeWeight(1);
-  rect(width/4-180-1, height/4-180-1, 362, 362);
-  rect(3*width/4-180-1, height/4-180-1, 362, 362);
+  // noFill();
+  // stroke(100, 255, 255);
+  // strokeWeight(1);
+  // rect(width/4-180-1, height/4-180-1, 362, 362);
+  // rect(3*width/4-180-1, height/4-180-1, 362, 362);
 
   // Blit the left and right to the mix with tint and fade
-  mix.beginDraw();
-  mix.background(0);
-  mix.blendMode(ADD);
-  mix.tint(255, fader);
-  leftRoutine.imageCenter(mix, 180+xofs, 180+yofs);
-  mix.tint(255, 255-fader);
-  rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
-  mix.endDraw();
-  pushStyle();
-  imageMode(CENTER);
-  image(mix, width/2.0, 3*height/4);
-  popStyle();
+  // mix.beginDraw();
+  // mix.background(0);
+  // mix.blendMode(ADD);
+  // mix.tint(255, fader);
+  // leftRoutine.imageCenter(mix, 180+xofs, 180+yofs);
+  // mix.tint(255, 255-fader);
+  // rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
+  // mix.endDraw();
+  // pushStyle();
+  // imageMode(CENTER);
+  // image(mix, width/2.0, 3*height/4);
+  // popStyle();
 
   // Draw the fader bar
   stroke(0);
@@ -233,4 +243,8 @@ public void draw() {
   imageMode(CORNER);
   image(output, 50, 550);
   transmitter.sendData(output);
+
+  // Update and display viewports
+  viewportList.update();
+  viewportList.display();
 }

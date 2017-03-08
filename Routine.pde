@@ -38,6 +38,10 @@ public abstract class Routine {
 
   public int width() { return pg.width; }
   public int height() { return pg.height; }
+
+  public PGraphics getPG() {
+    return pg;
+  }
 }
 
 public interface RoutineFactory {
