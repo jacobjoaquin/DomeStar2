@@ -23,6 +23,7 @@ int colorOffset = 0;
 int[] gammaTable = new int[256];
 
 ViewportList viewportList = new ViewportList();
+ViewportMixer viewportMixer;
 
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
@@ -33,30 +34,30 @@ RoutineFactory[] routines = new RoutineFactory[] {
 };
 
 public void setup() {
-  size(1024, 1024, P2D);
+  size(400, 400, P2D);
   frameRate(60);
-  // noSmooth();
-  imageMode(CENTER);
   initGammaTable();
 
-  leftRoutine = pickRoutine();
-  rightRoutine = pickRoutine();
-
-  mix = createGraphics(360, 360, P2D);
-  output = createGraphics(Config.STRIPS, Config.LEDS, P2D);
+  // leftRoutine = pickRoutine();
+  // rightRoutine = pickRoutine();
+  //
+  // mix = createGraphics(360, 360, P2D);
+  // output = createGraphics(Config.STRIPS, Config.LEDS, P2D);
 
   // Create viewports
-  Viewport vp = new Viewport(0, 0, 200, 200);  // Left Viewport
-  vp.setRoutine(pickRoutine());
-  viewportList.add(vp);
-  vp = new Viewport(200, 0, 200, 200);         // Right Viewport
-  vp.setRoutine(pickRoutine());
-  viewportList.add(vp);
+  Viewport vp0 = new Viewport(0, 0, 200, 200);    // Left Viewport
+  Viewport vp1 = new Viewport(200, 0, 200, 200);  // Right Viewport
+  vp0.setRoutine(pickRoutine());
+  vp1.setRoutine(pickRoutine());
+  viewportList.add(vp0);
+  viewportList.add(vp1);
+  viewportMixer = new ViewportMixer(100, 200, 200, 200);
+  viewportMixer.setViewports(vp0, vp1);
 
-  output.beginDraw();
-  output.background(0);
-  output.ellipse(output.width / 2.0, output.height / 2.0, 10, 10);
-  output.endDraw();
+  // output.beginDraw();
+  // output.background(0);
+  // output.ellipse(output.width / 2.0, output.height / 2.0, 10, 10);
+  // output.endDraw();
 
   Mapper mapper = new Mapper();
   map = mapper.build();
@@ -188,12 +189,12 @@ public color getColor(int idx) {
 public void draw() {
   background(100);
 
-  addCrossFade(faderOfs);
+  // addCrossFade(faderOfs);
 
   // Check here for changing routines to ensure we're in the
   // drawing thread.  Events can come from other threads.
-  if (shouldChangeRoutine)
-    changeRoutine();
+  // if (shouldChangeRoutine)
+  //   changeRoutine();
 
   // Draw the left routine
   // leftRoutine.beginDraw();
@@ -231,20 +232,22 @@ public void draw() {
   // popStyle();
 
   // Draw the fader bar
-  stroke(0);
-  line(width/2-255,height/2+25,width/2+255,height/2+25);
-  stroke(0, 0, 255);
-  strokeWeight(10);
-  xfade = width/2 - (fader-127)*2;
-  line(xfade, height/2, xfade, height/2 + 50);
+  // stroke(0);
+  // line(width/2-255,height/2+25,width/2+255,height/2+25);
+  // stroke(0, 0, 255);
+  // strokeWeight(10);
+  // xfade = width/2 - (fader-127)*2;
+  // line(xfade, height/2, xfade, height/2 + 50);
 
   // Output canvas
-  mixToOutput();
-  imageMode(CORNER);
-  image(output, 50, 550);
-  transmitter.sendData(output);
+  // mixToOutput();
+  // imageMode(CORNER);
+  // image(output, 50, 550);
+  // transmitter.sendData(output);
 
   // Update and display viewports
   viewportList.update();
   viewportList.display();
+  viewportMixer.update();
+  viewportMixer.display();
 }
