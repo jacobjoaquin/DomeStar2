@@ -234,18 +234,3 @@ public void draw() {
   image(output, 50, 550);
   transmitter.sendData(output);
 }
-
-void mixToOutput() {
-  int w = mix.width;
-  mix.loadPixels();
-  output.beginDraw();
-  output.loadPixels();
-
-  for (MapEntry entry : map) {
-    color c = mix.pixels[entry.x + entry.y * w];
-    output.pixels[entry.strip + entry.led * Config.STRIPS] = c;
-  }
-
-  output.updatePixels();
-  output.endDraw();
-}
