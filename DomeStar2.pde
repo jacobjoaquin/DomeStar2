@@ -41,7 +41,7 @@ public void setup() {
   rightRoutine = pickRoutine();
 
   mix = createGraphics(360, 360, P2D);
-  output = createGraphics(Config.LEDS, Config.STRIPS, P2D);
+  output = createGraphics(Config.STRIPS, Config.LEDS, P2D);
 
   output.beginDraw();
   output.background(0);
@@ -228,26 +228,24 @@ public void draw() {
   xfade = width/2 - (fader-127)*2;
   line(xfade, height/2, xfade, height/2 + 50);
 
-  mixToOutput();
-
   // Output canvas
+  mixToOutput();
   imageMode(CORNER);
-  image(output, 50, 700);
-
-  // Send the mix to the dome
-  transmitter.sendData(mix, map);
-  // transmitter.sendData(output);
+  image(output, 50, 550);
+  transmitter.sendData(output);
 }
 
 void mixToOutput() {
   int w = mix.width;
   mix.loadPixels();
+  output.beginDraw();
   output.loadPixels();
 
   for (MapEntry entry : map) {
-    color c = mix.pixels[entry.y * w + entry.x];
-    output.pixels[entry.strip * Config.LEDS + entry.led] = c;
+    color c = mix.pixels[entry.x + entry.y * w];
+    output.pixels[entry.strip + entry.led * Config.STRIPS] = c;
   }
 
   output.updatePixels();
+  output.endDraw();
 }
