@@ -45,13 +45,13 @@ public void setup() {
   // output = createGraphics(Config.STRIPS, Config.LEDS, P2D);
 
   // Create viewports
-  Viewport vp0 = new Viewport(0, 0, 200, 200);    // Left Viewport
-  Viewport vp1 = new Viewport(200, 0, 200, 200);  // Right Viewport
+  Viewport vp0 = new Viewport(0, 0, 200, 200);            // Left Viewport
+  Viewport vp1 = new Viewport(200, 0, 200, 200);          // Right Viewport
+  viewportMixer = new ViewportMixer(100, 200, 200, 200);  // Mixer
   vp0.setRoutine(pickRoutine());
   vp1.setRoutine(pickRoutine());
   viewportList.add(vp0);
   viewportList.add(vp1);
-  viewportMixer = new ViewportMixer(100, 200, 200, 200);
   viewportMixer.setViewports(vp0, vp1);
 
   // output.beginDraw();
@@ -244,6 +244,9 @@ public void draw() {
   // imageMode(CORNER);
   // image(output, 50, 550);
   // transmitter.sendData(output);
+
+  // Update modulation sources
+  viewportMixer.setPan(map(mouseX, 0, width, 0, 1));
 
   // Update and display viewports
   viewportList.update();

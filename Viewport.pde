@@ -58,6 +58,8 @@ class ViewportMixer {
   Viewport viewport0;
   Viewport viewport1;
   PGraphics pg;
+  int blendMode = ADD;
+  private float pan = 0.5;
 
   ViewportMixer(int x, int y, int w, int h) {
     this.x = x;
@@ -65,6 +67,10 @@ class ViewportMixer {
     this.w = w;
     this.h = h;
     pg = createGraphics(w, h, P2D);
+  }
+
+  void setPan(float value) {
+    pan = value;
   }
 
   void setViewports(Viewport viewport0, Viewport viewport1) {
@@ -76,8 +82,10 @@ class ViewportMixer {
     pg.beginDraw();
     pg.pushStyle();
     pg.background(0);
-    pg.blendMode(ADD);
+    pg.blendMode(blendMode);
+    pg.tint(255, 256 * (1.0 - pan));
     pg.image(viewport0.getPG(), 0, 0, w, h);
+    pg.tint(255, 256 * pan);
     pg.image(viewport1.getPG(), 0, 0, w, h);
     pg.popStyle();
     pg.endDraw();
