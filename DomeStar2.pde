@@ -8,8 +8,8 @@ import oscP5.*;
 OscP5 osc;
 Routine leftRoutine;
 Routine rightRoutine;
-PGraphics mix;
-PGraphics output;
+// PGraphics mix;
+// PGraphics output;
 MapEntry[] map;
 Transmitter transmitter;
 float fader = 127;
@@ -53,11 +53,6 @@ public void setup() {
   viewportList.add(vp0);
   viewportList.add(vp1);
   viewportMixer.setViewports(vp0, vp1);
-
-  // output.beginDraw();
-  // output.background(0);
-  // output.ellipse(output.width / 2.0, output.height / 2.0, 10, 10);
-  // output.endDraw();
 
   Mapper mapper = new Mapper();
   map = mapper.build();
@@ -239,11 +234,6 @@ public void draw() {
   // xfade = width/2 - (fader-127)*2;
   // line(xfade, height/2, xfade, height/2 + 50);
 
-  // Output canvas
-  // mixToOutput();
-  // imageMode(CORNER);
-  // image(output, 50, 550);
-  // transmitter.sendData(output);
 
   // Update modulation sources
   viewportMixer.setPan(map(mouseX, 0, width, 0, 1));
@@ -253,4 +243,10 @@ public void draw() {
   viewportList.display();
   viewportMixer.update();
   viewportMixer.display();
+
+  // Output canvas
+  PGraphics output = viewportMixer.getOutput();
+  // imageMode(CORNER);
+  image(output, 0, 200);
+  transmitter.sendData(output);
 }
