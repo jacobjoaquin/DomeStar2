@@ -4,20 +4,18 @@ import processing.video.*;
 import netP5.*;
 import oscP5.*;
 
-
 OscP5 osc;
 MapEntry[] map;
 Transmitter transmitter;
-float fader = 127;
-float faderOfs = 0;
+float pan = 127;
 
-int xofs,yofs;
-float xfade;
 boolean shouldChangeRoutine = false;
 int colorOffset = 0;
 
 int[] gammaTable = new int[256];
 
+Viewport viewportLeft;
+Viewport viewportRight;
 ViewportList viewportList = new ViewportList();
 ViewportMixer viewportMixer;
 
@@ -26,7 +24,7 @@ RoutineFactory[] routines = new RoutineFactory[] {
   new RectFactory(),
   new KaleFactory(),
   new StarFactory(),
-  new MovieFactory()
+  // new MovieFactory()
 };
 
 public void setup() {
@@ -35,14 +33,14 @@ public void setup() {
   initGammaTable();
 
   // Create viewports
-  Viewport vp0 = new Viewport(0, 0, 200, 200);            // Left Viewport
-  Viewport vp1 = new Viewport(200, 0, 200, 200);          // Right Viewport
-  viewportMixer = new ViewportMixer(100, 200, 200, 200);  // Mixer
-  vp0.setRoutine(pickRoutine());
-  vp1.setRoutine(pickRoutine());
-  viewportList.add(vp0);
-  viewportList.add(vp1);
-  viewportMixer.setViewports(vp0, vp1);
+  viewportLeft = new Viewport(0, 0, 200, 200);
+  viewportRight = new Viewport(200, 0, 200, 200);
+  viewportMixer = new ViewportMixer(100, 200, 200, 200);
+  viewportLeft.setRoutine(pickRoutine());
+  viewportRight.setRoutine(pickRoutine());
+  viewportList.add(viewportLeft);
+  viewportList.add(viewportRight);
+  viewportMixer.setViewports(viewportLeft, viewportRight);
 
   Mapper mapper = new Mapper();
   map = mapper.build();
@@ -51,17 +49,8 @@ public void setup() {
   // osc = new OscP5(this, 9000);
 }
 
-void addCrossFade(float e) {
-  fader = max(0, min(255, fader + e));
-}
-
 void resetCrossFade() {
-  fader = 127;
-}
-
-void setCenterOffset(int x, int y, int maxX, int maxY) {
-  xofs = (x - maxX/2) / (maxX / 90);
-  yofs = (y - maxY/2) / (maxY / 90);
+  pan = 0.5;
 }
 
 void requestChangeRoutine() {
@@ -74,19 +63,19 @@ void changeRoutine() {
 
   // Update the routine faded away, or
   // randomly update one of either the left or right.
-  if (fader < 50) {
-    // leftRoutine = pickRoutine();
-  } else if (fader > 200) {
-    // rightRoutine = pickRoutine();
+  if (pan < 0.25) {
+    viewportLeft.setRoutine(pickRoutine());
+  } else if (pan > 0.75) {
+    viewportRight.setRoutine(pickRoutine());
   } else if (random(2) > 1.0) {
-    // leftRoutine = pickRoutine();
+    viewportLeft.setRoutine(pickRoutine());
   } else {
-    // rightRoutine = pickRoutine();
+    viewportRight.setRoutine(pickRoutine());
   }
 }
 
 void mouseWheel(MouseEvent event) {
-  addCrossFade(event.getCount());
+  // TODO: Control pan here
 }
 
 void mousePressed() {
@@ -94,12 +83,11 @@ void mousePressed() {
 }
 
 void mouseMoved() {
-  setCenterOffset(mouseX, mouseY, width, height);
+  // Control microviews here
 }
 
 void keyPressed() {
   rotateColors(1);
-
 }
 
 void oscEvent(OscMessage message) {
@@ -113,17 +101,13 @@ void oscEvent(OscMessage message) {
     requestChangeRoutine();
   }
   else if (pattern.endsWith("/motion/angles")) {
-    setCenterOffset(
-      int(message.get(2).floatValue()*255),
-      int(message.get(0).floatValue()*255),
-      255,255
-    );
+    // Control microviews here
   }
   else if (pattern.endsWith("/button/Plus")) {
-    faderOfs = -2 * message.get(0).floatValue();
+    // panOfs = -2 * message.get(0).floatValue();
   }
   else if (pattern.endsWith("/button/Minus")) {
-    faderOfs = 2 * message.get(0).floatValue();
+    // panOfs = 2 * message.get(0).floatValue();
   }
   else if (pattern.endsWith("/button/Home")) {
     resetCrossFade();
@@ -173,8 +157,15 @@ public color getColor(int idx) {
 
 public void draw() {
   background(100);
+
   // Update modulation sources
-  viewportMixer.setPan(map(mouseX, 0, width, 0, 1));
+  pan = map(mouseX, 0, width, 0, 1);
+  viewportMixer.setPan(pan);
+
+  // Update routines
+  if (shouldChangeRoutine) {
+    changeRoutine();
+  }
 
   // Update and display viewports
   viewportList.update();
@@ -184,7 +175,6 @@ public void draw() {
 
   // Output canvas
   PGraphics output = viewportMixer.getOutput();
-  // imageMode(CORNER);
   image(output, 0, 200);
   transmitter.sendData(output);
 }
