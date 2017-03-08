@@ -18,7 +18,9 @@ class Viewport {
   int w;
   int h;
   protected PGraphics pg;
+  protected PGraphics pgFx;
   Routine routine;
+  PanAndScan foo;
 
   Viewport(int x, int y, int w, int h) {
     this.x = x;
@@ -31,6 +33,9 @@ class Viewport {
     routine.beginDraw();
     routine.draw();
     routine.endDraw();
+
+    // Apply effect chain
+    foo.update();
   }
 
   void display() {
@@ -38,15 +43,18 @@ class Viewport {
     imageMode(CORNER);
     image(pg, x, y, w, h);
     popStyle();
+    foo.displayOverlay();
   }
 
   void setRoutine(Routine routine) {
     this.routine = routine;
     pg = routine.getPG();
+    pgFx = createGraphics(pg.width, pg.height, P2D);
+    foo = new PanAndScan(this, pg, pgFx);
   }
 
   PGraphics getPG() {
-    return pg;
+    return pgFx;
   }
 }
 

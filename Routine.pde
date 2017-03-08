@@ -22,20 +22,6 @@ public abstract class Routine {
     pg.endDraw();
   }
 
-  public void imageCenter(int x, int y) {
-    pushStyle();
-    imageMode(CENTER);
-    image(pg, x, y, drawWidth, drawHeight);
-    popStyle();
-  }
-
-  public void imageCenter(PGraphics tpg, int x, int y) {
-    tpg.pushStyle();
-    tpg.imageMode(CENTER);
-    tpg.image(pg, x, y, drawWidth, drawHeight);
-    tpg.popStyle();
-  }
-
   public int width() { return pg.width; }
   public int height() { return pg.height; }
 
