@@ -3,11 +3,14 @@ import java.io.*;
 import processing.video.*;
 import netP5.*;
 import oscP5.*;
+import controlP5.*;
 
+ControlP5 cp5;
 OscP5 osc;
 MapEntry[] map;
 Transmitter transmitter;
 float pan = 127;
+
 
 boolean shouldChangeRoutine = false;
 int colorOffset = 0;
@@ -28,14 +31,24 @@ RoutineFactory[] routines = new RoutineFactory[] {
 };
 
 public void setup() {
-  size(400, 400, P2D);
+  size(600, 620, P2D);
   frameRate(60);
   initGammaTable();
 
+  // GUI
+  cp5 = new ControlP5(this);
+  cp5.addSlider("pan")
+  .setPosition(150,300)
+  .setRange(0, 1.0)
+  .setSize(300, 20)
+  .setColorForeground(color(255, 0, 128))
+  .setColorBackground(color(128, 0, 64))
+  .setColorActive(color(255, 48, 192));
+
   // Create viewports
-  viewportLeft = new Viewport(0, 0, 200, 200);
-  viewportRight = new Viewport(200, 0, 200, 200);
-  viewportMixer = new ViewportMixer(100, 200, 200, 200);
+  viewportLeft = new Viewport(0, 0, 300, 300);
+  viewportRight = new Viewport(300, 0, 300, 300);
+  viewportMixer = new ViewportMixer(150, 320, 300, 300);
   viewportLeft.setRoutine(pickRoutine());
   viewportRight.setRoutine(pickRoutine());
   viewportList.add(viewportLeft);
@@ -72,10 +85,6 @@ void changeRoutine() {
   } else {
     viewportRight.setRoutine(pickRoutine());
   }
-}
-
-void mouseWheel(MouseEvent event) {
-  // TODO: Control pan here
 }
 
 void mousePressed() {
@@ -159,7 +168,6 @@ public void draw() {
   background(100);
 
   // Update modulation sources
-  pan = map(mouseX, 0, width, 0, 1);
   viewportMixer.setPan(pan);
 
   // Update routines
@@ -175,6 +183,6 @@ public void draw() {
 
   // Output canvas
   PGraphics output = viewportMixer.getOutput();
-  image(output, 0, 200);
+  image(output, width - Config.STRIPS - 20, 320);
   transmitter.sendData(output);
 }
