@@ -26,7 +26,7 @@ public class Transmitter {
         b = gammaTable[b];
       }
 
-      int idx = (entry.led * Config.STRIPS + entry.strip) * 3 + 1;
+      int idx = (entry.strip + entry.led * Config.STRIPS) * 3 + 1;
       buffer[idx] = (byte)r;
 
       if (Config.SWAP_LOOKUP[entry.strip]) {
