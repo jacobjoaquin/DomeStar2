@@ -87,10 +87,6 @@ void changeRoutine() {
   }
 }
 
-void mouseWheel(MouseEvent event) {
-  // TODO: Control pan here
-}
-
 void mousePressed() {
   requestChangeRoutine();
 }
