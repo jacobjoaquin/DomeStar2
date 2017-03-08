@@ -4,49 +4,43 @@ import processing.video.*;
 import netP5.*;
 import oscP5.*;
 
-
 OscP5 osc;
-Routine leftRoutine;
-Routine rightRoutine;
-PGraphics mix;
-PGraphics output;
 MapEntry[] map;
 Transmitter transmitter;
-float fader = 127;
-float faderOfs = 0;
+float pan = 127;
 
-int xofs,yofs;
-float xfade;
 boolean shouldChangeRoutine = false;
 int colorOffset = 0;
 
 int[] gammaTable = new int[256];
 
+Viewport viewportLeft;
+Viewport viewportRight;
+ViewportList viewportList = new ViewportList();
+ViewportMixer viewportMixer;
+
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
   new RectFactory(),
-  // new KaleFactory(),
+  new KaleFactory(),
   new StarFactory(),
   // new MovieFactory()
 };
 
 public void setup() {
-  size(1024, 1024, P2D);
+  size(400, 400, P2D);
   frameRate(60);
-  // noSmooth();
-  imageMode(CENTER);
   initGammaTable();
 
-  leftRoutine = pickRoutine();
-  rightRoutine = pickRoutine();
-
-  mix = createGraphics(360, 360, P2D);
-  output = createGraphics(Config.STRIPS, Config.LEDS, P2D);
-
-  output.beginDraw();
-  output.background(0);
-  output.ellipse(output.width / 2.0, output.height / 2.0, 10, 10);
-  output.endDraw();
+  // Create viewports
+  viewportLeft = new Viewport(0, 0, 200, 200);
+  viewportRight = new Viewport(200, 0, 200, 200);
+  viewportMixer = new ViewportMixer(100, 200, 200, 200);
+  viewportLeft.setRoutine(pickRoutine());
+  viewportRight.setRoutine(pickRoutine());
+  viewportList.add(viewportLeft);
+  viewportList.add(viewportRight);
+  viewportMixer.setViewports(viewportLeft, viewportRight);
 
   Mapper mapper = new Mapper();
   map = mapper.build();
@@ -55,17 +49,8 @@ public void setup() {
   // osc = new OscP5(this, 9000);
 }
 
-void addCrossFade(float e) {
-  fader = max(0, min(255, fader + e));
-}
-
 void resetCrossFade() {
-  fader = 127;
-}
-
-void setCenterOffset(int x, int y, int maxX, int maxY) {
-  xofs = (x - maxX/2) / (maxX / 90);
-  yofs = (y - maxY/2) / (maxY / 90);
+  pan = 0.5;
 }
 
 void requestChangeRoutine() {
@@ -78,19 +63,19 @@ void changeRoutine() {
 
   // Update the routine faded away, or
   // randomly update one of either the left or right.
-  if (fader < 50) {
-    leftRoutine = pickRoutine();
-  } else if (fader > 200) {
-    rightRoutine = pickRoutine();
+  if (pan < 0.25) {
+    viewportLeft.setRoutine(pickRoutine());
+  } else if (pan > 0.75) {
+    viewportRight.setRoutine(pickRoutine());
   } else if (random(2) > 1.0) {
-    leftRoutine = pickRoutine();
+    viewportLeft.setRoutine(pickRoutine());
   } else {
-    rightRoutine = pickRoutine();
+    viewportRight.setRoutine(pickRoutine());
   }
 }
 
 void mouseWheel(MouseEvent event) {
-  addCrossFade(event.getCount());
+  // TODO: Control pan here
 }
 
 void mousePressed() {
@@ -98,12 +83,11 @@ void mousePressed() {
 }
 
 void mouseMoved() {
-  setCenterOffset(mouseX, mouseY, width, height);
+  // Control microviews here
 }
 
 void keyPressed() {
   rotateColors(1);
-
 }
 
 void oscEvent(OscMessage message) {
@@ -117,17 +101,13 @@ void oscEvent(OscMessage message) {
     requestChangeRoutine();
   }
   else if (pattern.endsWith("/motion/angles")) {
-    setCenterOffset(
-      int(message.get(2).floatValue()*255),
-      int(message.get(0).floatValue()*255),
-      255,255
-    );
+    // Control microviews here
   }
   else if (pattern.endsWith("/button/Plus")) {
-    faderOfs = -2 * message.get(0).floatValue();
+    // panOfs = -2 * message.get(0).floatValue();
   }
   else if (pattern.endsWith("/button/Minus")) {
-    faderOfs = 2 * message.get(0).floatValue();
+    // panOfs = 2 * message.get(0).floatValue();
   }
   else if (pattern.endsWith("/button/Home")) {
     resetCrossFade();
@@ -178,59 +158,23 @@ public color getColor(int idx) {
 public void draw() {
   background(100);
 
-  addCrossFade(faderOfs);
+  // Update modulation sources
+  pan = map(mouseX, 0, width, 0, 1);
+  viewportMixer.setPan(pan);
 
-  // Check here for changing routines to ensure we're in the
-  // drawing thread.  Events can come from other threads.
-  if (shouldChangeRoutine)
+  // Update routines
+  if (shouldChangeRoutine) {
     changeRoutine();
+  }
 
-  // Draw the left routine
-  leftRoutine.beginDraw();
-  leftRoutine.draw();
-  leftRoutine.endDraw();
-
-  // Draw the right routine
-  rightRoutine.beginDraw();
-  rightRoutine.draw();
-  rightRoutine.endDraw();
-
-  // Blit the left and right routines to screen with offsets
-  leftRoutine.imageCenter(width/4+xofs, height/4+yofs);
-  rightRoutine.imageCenter(3*width/4-xofs, height/4-yofs);
-
-  // Draw the clipping box
-  noFill();
-  stroke(100, 255, 255);
-  strokeWeight(1);
-  rect(width/4-180-1, height/4-180-1, 362, 362);
-  rect(3*width/4-180-1, height/4-180-1, 362, 362);
-
-  // Blit the left and right to the mix with tint and fade
-  mix.beginDraw();
-  mix.background(0);
-  mix.blendMode(ADD);
-  mix.tint(255, fader);
-  leftRoutine.imageCenter(mix, 180+xofs, 180+yofs);
-  mix.tint(255, 255-fader);
-  rightRoutine.imageCenter(mix, 180-xofs, 180-yofs);
-  mix.endDraw();
-  pushStyle();
-  imageMode(CENTER);
-  image(mix, width/2.0, 3*height/4);
-  popStyle();
-
-  // Draw the fader bar
-  stroke(0);
-  line(width/2-255,height/2+25,width/2+255,height/2+25);
-  stroke(0, 0, 255);
-  strokeWeight(10);
-  xfade = width/2 - (fader-127)*2;
-  line(xfade, height/2, xfade, height/2 + 50);
+  // Update and display viewports
+  viewportList.update();
+  viewportList.display();
+  viewportMixer.update();
+  viewportMixer.display();
 
   // Output canvas
-  mixToOutput();
-  imageMode(CORNER);
-  image(output, 50, 550);
+  PGraphics output = viewportMixer.getOutput();
+  image(output, 0, 200);
   transmitter.sendData(output);
 }
