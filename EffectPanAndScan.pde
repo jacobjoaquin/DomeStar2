@@ -4,8 +4,8 @@ class PanAndScan extends Effect{
   float s;
   float xMod = 0.0;
   float yMod = 0.0;
-  float sizeMod = 0.5;
-  float ratio = 0.5;
+  float sizeMod = 1.0;
+  float ratio = 1.0;
 
   PanAndScan() {
   }

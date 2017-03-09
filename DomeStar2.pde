@@ -91,6 +91,16 @@ public void setup() {
   .setColorActive(color(255, 48, 192))
   .setLabelVisible(false);
 
+  cp5.addButton("newLeft")
+  .setValue(0)
+  .setPosition(0, 300)
+  .setSize(150, 20);
+
+  cp5.addButton("newRight")
+  .setValue(0)
+  .setPosition(450, 300)
+  .setSize(150, 20);
+
   // Create viewports
   viewportLeft = new Viewport(0, 0, 300, 300);
   viewportRight = new Viewport(300, 0, 300, 300);
@@ -112,6 +122,14 @@ public void setup() {
 
   transmitter = new Transmitter(this);
   // osc = new OscP5(this, 9000);
+}
+
+public void newLeft(int theValue) {
+  viewportLeft.setRoutine(pickRoutine());
+}
+
+public void newRight(int theValue) {
+  viewportRight.setRoutine(pickRoutine());
 }
 
 void resetCrossFade() {
@@ -140,7 +158,7 @@ void changeRoutine() {
 }
 
 void mousePressed() {
-  requestChangeRoutine();
+  // requestChangeRoutine();
 }
 
 void mouseMoved() {
@@ -242,7 +260,7 @@ public void draw() {
   viewportMixer.display();
 
   // Output canvas
-  // PGraphics output = viewportMixer.getOutput();
+  PGraphics output = viewportMixer.getOutput();
   // image(output, width - Config.STRIPS - 20, 320);
-  // transmitter.sendData(output);
+  transmitter.sendData(output);
 }
