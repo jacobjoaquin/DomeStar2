@@ -19,18 +19,25 @@ class Viewport {
   int h;
   protected PGraphics pg;
   Routine routine;
+  EffectsChain effectsChain;
 
   Viewport(int x, int y, int w, int h) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
+    effectsChain = new EffectsChain(this);
+  }
+
+  void addEffect(Effect effect) {
+    effectsChain.add(effect);
   }
 
   void update() {
     routine.beginDraw();
     routine.draw();
     routine.endDraw();
+    effectsChain.update();
   }
 
   void display() {
@@ -38,15 +45,21 @@ class Viewport {
     imageMode(CORNER);
     image(pg, x, y, w, h);
     popStyle();
+    effectsChain.displayOverlay();
   }
 
   void setRoutine(Routine routine) {
     this.routine = routine;
     pg = routine.getPG();
+    effectsChain.updateRoutine();
   }
 
   PGraphics getPG() {
     return pg;
+  }
+
+  PGraphics getEffectsPG() {
+    return effectsChain.getPG();
   }
 }
 
@@ -90,9 +103,9 @@ class ViewportMixer {
     pg.background(0);
     pg.blendMode(blendMode);
     pg.tint(255, 256 * (1.0 - pan));
-    pg.image(viewport0.getPG(), 0, 0, pg.width, pg.height);
+    pg.image(viewport0.getEffectsPG(), 0, 0, pg.width, pg.height);
     pg.tint(255, 256 * pan);
-    pg.image(viewport1.getPG(), 0, 0, pg.width, pg.height);
+    pg.image(viewport1.getEffectsPG(), 0, 0, pg.width, pg.height);
     pg.popStyle();
     pg.endDraw();
 
