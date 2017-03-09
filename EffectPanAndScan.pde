@@ -2,6 +2,8 @@ class PanAndScan extends Effect{
   float x;
   float y;
   float s;
+  float xMod = 0.0;
+  float yMod = 0.0;
   float ratio = 0.5;
 
   PanAndScan() {
@@ -16,9 +18,9 @@ class PanAndScan extends Effect{
   }
 
   void update() {
-    x = map(mouseX, 0, width, 0, pg.width - s);
-    y = map(mouseY, 0, height, 0, pg.height - s);
-
+    x = xMod * (pg.width - s);
+    y = yMod * (pg.height - s);
+    
     pg.beginDraw();
     pg.copy(pgViewport, (int)x, (int)y, (int)s, (int)s, 0, 0, pg.width, pg.height);
     pg.endDraw();

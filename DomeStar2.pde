@@ -5,23 +5,35 @@ import netP5.*;
 import oscP5.*;
 import controlP5.*;
 
-ControlP5 cp5;
 OscP5 osc;
 MapEntry[] map;
 Transmitter transmitter;
-float pan = 127;
-
+float pan = 0.5;
 
 boolean shouldChangeRoutine = false;
 int colorOffset = 0;
-
 int[] gammaTable = new int[256];
 
+// Viewports
 Viewport viewportLeft;
 Viewport viewportRight;
 ViewportList viewportList = new ViewportList();
 ViewportMixer viewportMixer;
 
+// GUI
+ControlP5 cp5;
+Slider sliderPan;
+Slider2D panAndScanLeftSlider;
+Slider2D panAndScanRightSlider;
+// Slider2D viewportRightPanAndScan;
+
+// Effects
+PanAndScan panAndScanLeft;
+// float panAndScanLeftX = 0.0;
+// float panAndScanLeftY = 0.0;
+PanAndScan panAndScanRight;
+// float panAndScanLeftX = 0.0;
+// float panAndScanLeftY = 0.0;
 
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
@@ -38,10 +50,26 @@ public void setup() {
 
   // GUI
   cp5 = new ControlP5(this);
-  cp5.addSlider("pan")
+  sliderPan = cp5.addSlider("pan")
   .setPosition(150,300)
   .setRange(0, 1.0)
   .setSize(300, 20)
+  .setColorForeground(color(255, 0, 128))
+  .setColorBackground(color(128, 0, 64))
+  .setColorActive(color(255, 48, 192));
+
+  panAndScanLeftSlider = cp5.addSlider2D("Pan and Scan Left")
+  .setPosition(0, 320)
+  .setSize(150, 150)
+  .setArrayValue(new float[] {0.5, 0.5})
+  .setColorForeground(color(255, 0, 128))
+  .setColorBackground(color(128, 0, 64))
+  .setColorActive(color(255, 48, 192));
+
+  panAndScanRightSlider = cp5.addSlider2D("Pan and Scan Right")
+  .setPosition(450, 320)
+  .setSize(150, 150)
+  .setArrayValue(new float[] {0.5, 0.5})
   .setColorForeground(color(255, 0, 128))
   .setColorBackground(color(128, 0, 64))
   .setColorActive(color(255, 48, 192));
@@ -56,9 +84,11 @@ public void setup() {
   viewportList.add(viewportRight);
   viewportMixer.setViewports(viewportLeft, viewportRight);
 
-  // Add effects
-  viewportLeft.addEffect(new PanAndScan());
-  viewportRight.addEffect(new PanAndScan(0.125));
+  // Effects
+  panAndScanLeft = new PanAndScan();
+  viewportLeft.addEffect(panAndScanLeft);
+  panAndScanRight = new PanAndScan();
+  viewportRight.addEffect(panAndScanRight);
 
   Mapper mapper = new Mapper();
   map = mapper.build();
@@ -174,6 +204,12 @@ public void draw() {
 
   // Update modulation sources
   viewportMixer.setPan(pan);
+  float[] panAndScanArrayLeft = panAndScanLeftSlider.getArrayValue();
+  panAndScanLeft.xMod = panAndScanArrayLeft[0] / 100.0;
+  panAndScanLeft.yMod = panAndScanArrayLeft[1] / 100.0;
+  float[] panAndScanArrayRight = panAndScanRightSlider.getArrayValue();
+  panAndScanRight.xMod = panAndScanArrayRight[0] / 100.0;
+  panAndScanRight.yMod = panAndScanArrayRight[1] / 100.0;
 
   // Update routines
   if (shouldChangeRoutine) {
@@ -187,7 +223,7 @@ public void draw() {
   viewportMixer.display();
 
   // Output canvas
-  PGraphics output = viewportMixer.getOutput();
-  image(output, width - Config.STRIPS - 20, 320);
-  transmitter.sendData(output);
+  // PGraphics output = viewportMixer.getOutput();
+  // image(output, width - Config.STRIPS - 20, 320);
+  // transmitter.sendData(output);
 }
