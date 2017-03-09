@@ -22,6 +22,7 @@ Viewport viewportRight;
 ViewportList viewportList = new ViewportList();
 ViewportMixer viewportMixer;
 
+
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
   new RectFactory(),
@@ -54,6 +55,10 @@ public void setup() {
   viewportList.add(viewportLeft);
   viewportList.add(viewportRight);
   viewportMixer.setViewports(viewportLeft, viewportRight);
+
+  // Add effects
+  viewportLeft.addEffect(new PanAndScan());
+  viewportRight.addEffect(new PanAndScan());
 
   Mapper mapper = new Mapper();
   map = mapper.build();

@@ -1,15 +1,9 @@
-class PanAndScan {
-  Viewport viewport;
-  PGraphics pg;
-  PGraphics pgFx;
+class PanAndScan extends Effect{
   float x;
   float y;
   float s;
 
-  PanAndScan(Viewport parent, PGraphics pg, PGraphics pgFx) {
-    this.pg = pg;
-    this.pgFx = pgFx;
-    viewport = parent;
+  PanAndScan() {
   }
 
   void update() {
@@ -17,9 +11,9 @@ class PanAndScan {
     x = map(mouseX, 0, width, 0, pg.width - s);
     y = map(mouseY, 0, height, 0, pg.height - s);
 
-    pgFx.beginDraw();
-    pgFx.copy(pg, (int)x, (int)y, (int)s, (int)s, 0, 0, pg.width, pg.height);
-    pgFx.endDraw();
+    pg.beginDraw();
+    pg.copy(pgViewport, (int)x, (int)y, (int)s, (int)s, 0, 0, pg.width, pg.height);
+    pg.endDraw();
   }
 
   void displayOverlay() {
