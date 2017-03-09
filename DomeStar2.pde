@@ -8,7 +8,6 @@ import controlP5.*;
 OscP5 osc;
 MapEntry[] map;
 Transmitter transmitter;
-float pan = 0.5;
 
 boolean shouldChangeRoutine = false;
 int colorOffset = 0;
@@ -25,15 +24,15 @@ ControlP5 cp5;
 Slider sliderPan;
 Slider2D panAndScanLeftSlider;
 Slider2D panAndScanRightSlider;
-// Slider2D viewportRightPanAndScan;
+Slider panAndScanLeftSizeSlider;
+Slider panAndScanRightSizeSlider;
+float panAndScanLeftSize = 1.0;
+float panAndScanRightSize = 1.0;
 
 // Effects
+float pan = 0.5;
 PanAndScan panAndScanLeft;
-// float panAndScanLeftX = 0.0;
-// float panAndScanLeftY = 0.0;
 PanAndScan panAndScanRight;
-// float panAndScanLeftX = 0.0;
-// float panAndScanLeftY = 0.0;
 
 RoutineFactory[] routines = new RoutineFactory[] {
   new PerlinFactory(),
@@ -73,6 +72,24 @@ public void setup() {
   .setColorForeground(color(255, 0, 128))
   .setColorBackground(color(128, 0, 64))
   .setColorActive(color(255, 48, 192));
+
+  panAndScanLeftSizeSlider = cp5.addSlider("Pan and Scan Size")
+  .setPosition(0, 490)
+  .setRange(0, 1.0)
+  .setSize(150, 20)
+  .setColorForeground(color(255, 0, 128))
+  .setColorBackground(color(128, 0, 64))
+  .setColorActive(color(255, 48, 192))
+  .setLabelVisible(false);
+
+  panAndScanRightSizeSlider = cp5.addSlider("Pan and Scan Size2")
+  .setPosition(450, 490)
+  .setRange(0, 1.0)
+  .setSize(150, 20)
+  .setColorForeground(color(255, 0, 128))
+  .setColorBackground(color(128, 0, 64))
+  .setColorActive(color(255, 48, 192))
+  .setLabelVisible(false);
 
   // Create viewports
   viewportLeft = new Viewport(0, 0, 300, 300);
@@ -207,9 +224,11 @@ public void draw() {
   float[] panAndScanArrayLeft = panAndScanLeftSlider.getArrayValue();
   panAndScanLeft.xMod = panAndScanArrayLeft[0] / 100.0;
   panAndScanLeft.yMod = panAndScanArrayLeft[1] / 100.0;
+  panAndScanLeft.setSizeMod(panAndScanLeftSizeSlider.getValue());
   float[] panAndScanArrayRight = panAndScanRightSlider.getArrayValue();
   panAndScanRight.xMod = panAndScanArrayRight[0] / 100.0;
   panAndScanRight.yMod = panAndScanArrayRight[1] / 100.0;
+  panAndScanRight.setSizeMod(panAndScanRightSizeSlider.getValue());
 
   // Update routines
   if (shouldChangeRoutine) {
