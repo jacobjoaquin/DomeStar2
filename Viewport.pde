@@ -51,6 +51,7 @@ class Viewport {
   void setRoutine(Routine routine) {
     this.routine = routine;
     pg = routine.getPG();
+    effectsChain.updateRoutine();
   }
 
   PGraphics getPG() {

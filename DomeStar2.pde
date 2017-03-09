@@ -58,7 +58,7 @@ public void setup() {
 
   // Add effects
   viewportLeft.addEffect(new PanAndScan());
-  viewportRight.addEffect(new PanAndScan());
+  viewportRight.addEffect(new PanAndScan(0.125));
 
   Mapper mapper = new Mapper();
   map = mapper.build();

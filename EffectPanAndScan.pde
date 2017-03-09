@@ -2,12 +2,20 @@ class PanAndScan extends Effect{
   float x;
   float y;
   float s;
+  float ratio = 0.5;
 
   PanAndScan() {
   }
 
+  PanAndScan(float ratio) {
+    this.ratio = ratio;
+  }
+
+  void init() {
+    s = pg.width * ratio;
+  }
+
   void update() {
-    s = pg.width / 2.0;
     x = map(mouseX, 0, width, 0, pg.width - s);
     y = map(mouseY, 0, height, 0, pg.height - s);
 

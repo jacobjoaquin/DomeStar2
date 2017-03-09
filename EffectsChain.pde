@@ -8,6 +8,13 @@ class EffectsChain {
     pg = viewport.getPG();
   }
 
+  void updateRoutine() {
+    // Updates all the PGs down the chain
+    for (Effect effect : list) {
+      effect.setParent(this);
+    }
+  }
+
   void add(Effect effect) {
     effect.setParent(this);
     list.add(effect);
@@ -52,15 +59,18 @@ abstract class Effect {
   void displayOverlay() {
   }
 
+  void init() {
+  }
+
   PGraphics getPG() {
     return pg;
   }
 
   final void setParent(EffectsChain parent) {
-    println("Effect.setParent()");
     this.parent = parent;
     viewport = parent.getViewport();
     pgViewport = viewport.getPG();
     pg = createGraphics(pgViewport.width, pgViewport.height, P2D);
+    init();
   }
 }
