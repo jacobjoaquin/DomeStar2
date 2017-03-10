@@ -83,6 +83,8 @@ abstract class Effect {
 
   // (optional) Allows drawing on top of the viewport without introducing
   // changes in the final output of the viewport of EffectsChain
+  // TODO: Utilize clip() and noClip() so overlays don't bleed outside
+  // of the viewport area.
   void displayOverlay() {
   }
 
