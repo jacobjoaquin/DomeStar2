@@ -47,59 +47,7 @@ public void setup() {
   frameRate(60);
   initGammaTable();
 
-  // GUI
-  cp5 = new ControlP5(this);
-  sliderPan = cp5.addSlider("pan")
-  .setPosition(150,300)
-  .setRange(0, 1.0)
-  .setSize(300, 20)
-  .setColorForeground(color(255, 0, 128))
-  .setColorBackground(color(128, 0, 64))
-  .setColorActive(color(255, 48, 192));
-
-  panAndScanLeftSlider = cp5.addSlider2D("Pan and Scan Left")
-  .setPosition(0, 320)
-  .setSize(150, 150)
-  .setArrayValue(new float[] {0.5, 0.5})
-  .setColorForeground(color(255, 0, 128))
-  .setColorBackground(color(128, 0, 64))
-  .setColorActive(color(255, 48, 192));
-
-  panAndScanRightSlider = cp5.addSlider2D("Pan and Scan Right")
-  .setPosition(450, 320)
-  .setSize(150, 150)
-  .setArrayValue(new float[] {0.5, 0.5})
-  .setColorForeground(color(255, 0, 128))
-  .setColorBackground(color(128, 0, 64))
-  .setColorActive(color(255, 48, 192));
-
-  panAndScanLeftSizeSlider = cp5.addSlider("Pan and Scan Size")
-  .setPosition(0, 490)
-  .setRange(0, 1.0)
-  .setSize(150, 20)
-  .setColorForeground(color(255, 0, 128))
-  .setColorBackground(color(128, 0, 64))
-  .setColorActive(color(255, 48, 192))
-  .setLabelVisible(false);
-
-  panAndScanRightSizeSlider = cp5.addSlider("Pan and Scan Size2")
-  .setPosition(450, 490)
-  .setRange(0, 1.0)
-  .setSize(150, 20)
-  .setColorForeground(color(255, 0, 128))
-  .setColorBackground(color(128, 0, 64))
-  .setColorActive(color(255, 48, 192))
-  .setLabelVisible(false);
-
-  cp5.addButton("newLeft")
-  .setValue(0)
-  .setPosition(0, 300)
-  .setSize(150, 20);
-
-  cp5.addButton("newRight")
-  .setValue(0)
-  .setPosition(450, 300)
-  .setSize(150, 20);
+  initControls();
 
   // Create viewports
   viewportLeft = new Viewport(0, 0, 300, 300);
