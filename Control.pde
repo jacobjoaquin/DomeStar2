@@ -60,3 +60,83 @@ void initControls() {
   .setSize(150, 20)
   .setColor(guiOrange);
 }
+
+void resetCrossFade() {
+  pan = 0.5;
+}
+
+void requestChangeRoutine() {
+  shouldChangeRoutine = true;
+}
+
+// Do not call directly, instead set shouldChangeRoutine
+void changeRoutine() {
+  shouldChangeRoutine = false;
+
+  // Update the routine faded away, or
+  // randomly update one of either the left or right.
+  if (pan < 0.25) {
+    viewportLeft.setRoutine(pickRoutine());
+  } else if (pan > 0.75) {
+    viewportRight.setRoutine(pickRoutine());
+  } else if (random(2) > 1.0) {
+    viewportLeft.setRoutine(pickRoutine());
+  } else {
+    viewportRight.setRoutine(pickRoutine());
+  }
+}
+
+void keyPressed() {
+  rotateColors(1);
+}
+
+void oscEvent(OscMessage message) {
+  String pattern = message.addrPattern();
+  //message.print();
+
+  if (!pattern.startsWith("/wii/"))
+    return;
+
+  if (pattern.endsWith("/button/A") && message.get(0).floatValue() == 0) {
+    requestChangeRoutine();
+  }
+  else if (pattern.endsWith("/motion/angles")) {
+    // Control microviews here
+  }
+  else if (pattern.endsWith("/button/Plus")) {
+    // panOfs = -2 * message.get(0).floatValue();
+  }
+  else if (pattern.endsWith("/button/Minus")) {
+    // panOfs = 2 * message.get(0).floatValue();
+  }
+  else if (pattern.endsWith("/button/Home")) {
+    resetCrossFade();
+  }
+  else if (pattern.endsWith("/button/Up")) {
+    rotateColors(1);
+  }
+  else if (pattern.endsWith("/button/Down")) {
+    rotateColors(-1);
+  }
+}
+
+Routine pickRoutine() {
+  int idx = int(random(routines.length));
+  RoutineFactory factory = routines[idx];
+
+  Routine instance = factory.create(this);
+  instance.beginDraw();
+  instance.setup();
+  instance.endDraw();
+  return instance;
+}
+
+public void rotateColors(int ofs) {
+  int len = Config.PALETTE.length;
+  colorOffset += ofs;
+
+  if (colorOffset >= len)
+    colorOffset -= len;
+  else if (colorOffset < 0)
+    colorOffset += len;
+}
