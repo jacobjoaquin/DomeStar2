@@ -46,7 +46,6 @@ public void setup() {
   size(600, 620, P2D);
   frameRate(60);
   initGammaTable();
-
   initControls();
 
   // Create viewports
@@ -89,16 +88,8 @@ public color getColor(int idx) {
 public void draw() {
   background(100);
 
-  // Update modulation sources
-  viewportMixer.setPan(pan);
-  float[] panAndScanArrayLeft = panAndScanLeftSlider.getArrayValue();
-  panAndScanLeft.xMod = panAndScanArrayLeft[0] / 100.0;
-  panAndScanLeft.yMod = panAndScanArrayLeft[1] / 100.0;
-  panAndScanLeft.setSizeMod(panAndScanLeftSizeSlider.getValue());
-  float[] panAndScanArrayRight = panAndScanRightSlider.getArrayValue();
-  panAndScanRight.xMod = panAndScanArrayRight[0] / 100.0;
-  panAndScanRight.yMod = panAndScanArrayRight[1] / 100.0;
-  panAndScanRight.setSizeMod(panAndScanRightSizeSlider.getValue());
+  // Update modulations
+  updateModulations();
 
   // Update routines
   if (shouldChangeRoutine) {
