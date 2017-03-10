@@ -1,9 +1,15 @@
+/*
+PanAndScan
+
+Reimplementation of the original pan and scan to utilize the
+Effect and EffectChain classes.
+*/
 class PanAndScan extends Effect{
   float x;
   float y;
   float s;
-  float xMod = 0.0;
-  float yMod = 0.0;
+  float xMod = 0.0;    // Modulation for x. Range [0.0, 1.0]
+  float yMod = 0.0;    // Modulation for y. Range [0.0, 1.0]
   float sizeMod = 1.0;
   float ratio = 1.0;
 
@@ -18,6 +24,7 @@ class PanAndScan extends Effect{
     s = pg.width * ratio;
   }
 
+  // Modulates the size of the pan and scan window
   void setSizeMod(float value) {
     this.sizeMod = value;
   }
@@ -33,6 +40,8 @@ class PanAndScan extends Effect{
     pg.endDraw();
   }
 
+  // Draws a rect over the viewport to indicate the part of the image is being
+  // drawn.
   void displayOverlay() {
     pushMatrix();
     pushStyle();

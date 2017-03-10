@@ -59,7 +59,7 @@ public class Transmitter {
       int idx = i * 3 + 1;
       buffer[idx] = (byte)r;
 
-      // TODO: Double check the lookup index
+      // TODO: This is wrong. Create a lookup table on instantiation.
       if (Config.SWAP_LOOKUP[i / Config.LEDS]) {
         buffer[idx + 2] = (byte)g;
         buffer[idx + 1] = (byte)b;
